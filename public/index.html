@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legal Knowledge Extractor</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <div class="container">
+        <h1>Legal Knowledge Extractor</h1>
+        
+        <div class="section">
+            <h2>Upload a PDF or Text File</h2>
+            <input type="file" id="fileInput">
+            <button onclick="uploadFile()">Upload</button>
+        </div>
+
+        <hr>
+
+        <div class="section">
+            <h2>Extract Legal Text from URL</h2>
+            <input type="text" id="urlInput" placeholder="Enter URL">
+            <button onclick="extractFromURL()">Extract</button>
+        </div>
+
+        <hr>
+
+    <script src="script.js"></script>
+
+</body>
+</html>
