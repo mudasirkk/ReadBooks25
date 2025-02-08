@@ -23,13 +23,17 @@ header {
     margin: 5px auto;
 }
 
+.underline {
+    text-decoration: underline;
+}
+
 nav {
-    background-color: #333; 
-    padding: 10px 0;
+    background-color: #333;
+    padding: 10px;
 }
 
 nav ul {
-    list-style: none;
+    list-style-type: none;
     padding: 0;
     margin: 0;
     display: flex;
@@ -37,19 +41,20 @@ nav ul {
 }
 
 nav ul li {
-    margin: 0 20px;
+    margin: 0 15px;
 }
 
 nav ul li a {
     color: white;
     text-decoration: none;
-    font-size: 18px;
     padding: 10px 15px;
-    transition: 0.3s;
+    display: inline-block;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 nav ul li a:hover {
-    text-decoration: underline;
+    background-color: #4CAF50; 
+    border-radius: 5px;
 }
 
 .container {
