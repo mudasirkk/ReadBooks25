@@ -22,7 +22,6 @@ if ($_FILES["uploadedFile"]["error"] == UPLOAD_ERR_OK) {
     // Extract text from TXT file
     if ($fileType == "text/plain") {
         $extractedText = file_get_contents($fileTmpPath);
-    // Extract text from a PDF (Requires `pdftotext` to be installed on your server)
     } 
     // Extract text from PDF file using smalot/pdfparser
     elseif ($fileType == "application/pdf") {
