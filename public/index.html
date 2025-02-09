@@ -5,8 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Web-Based Knowledge Extractor</title>
     <link rel="stylesheet" href="styles.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.14.305/pdf.min.js"></script>
-    <script defer src="script.js"></script>
 </head>
 <body>
 
@@ -26,16 +24,20 @@
     <div class="container">
         <div class="section">
             <h2>Upload a PDF or Text File</h2>
-            <input type="file" id="fileInput">
-            <button onclick="uploadFile()">Upload</button>
+            <form action="upload.php" method="POST" enctype="multipart/form-data">
+                <input type="file" name="uploadedFile" required>
+                <button type="submit">Upload</button>
+            </form>
         </div>
 
         <hr>
 
         <div class="section">
             <h2>Extract Legal Text from URL</h2>
-            <input type="text" id="urlInput" placeholder="Enter URL">
-            <button onclick="extractFromURL()">Extract</button>
+            <form action="extract-url.php" method="POST">
+                <input type="text" name="url" placeholder="Enter URL" required>
+                <button type="submit">Extract</button>
+            </form>
         </div>
 
         <hr>
@@ -47,7 +49,7 @@
     </div>
 
     <footer>
-        <p>© 2025 Read Books Project </p>
+        <p>© 2025 Read Books Project</p>
     </footer>
 
 </body>
