@@ -1,5 +1,5 @@
 <?php
-require __DIR__ . '/../vendor/autoload.php'; // Ensure this points to the correct location
+require __DIR__ . '/../vendor/autoload.php'; 
 use Smalot\PdfParser\Parser;
 
 $servername = "cs.newpaltz.edu";
@@ -19,11 +19,10 @@ if ($_FILES["uploadedFile"]["error"] == UPLOAD_ERR_OK) {
     
     $extractedText = "";
 
-    // Extract text from TXT file
     if ($fileType == "text/plain") {
         $extractedText = file_get_contents($fileTmpPath);
     } 
-    // Extract text from PDF file using smalot/pdfparser
+
     elseif ($fileType == "application/pdf") {
         $parser = new Parser();
         $pdf = $parser->parseFile($fileTmpPath);
