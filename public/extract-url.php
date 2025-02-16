@@ -14,10 +14,11 @@ function cleanExtractedText($text) {
     $text = preg_replace('/<style\b[^>]*>(.*?)<\/style>/is', '', $text);
     $text = preg_replace('/<!--.*?-->/s', '', $text);
     $text = preg_replace('/<[^>]+>/', '', $text);
+    $text = preg_replace('/https?:\/\/\S+|www\.\S+/', '', $text);
+    $text = preg_replace('/\S+@\S+\.\S+/', '', $text);
     $text = preg_replace('/\s+/', ' ', $text);
     $text = html_entity_decode($text, ENT_QUOTES | ENT_HTML5, 'UTF-8');
-    $text = trim($text);
-    return $text;
+    return trim($text);
 }
 
 if (isset($_POST['url'])) {
