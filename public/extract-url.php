@@ -26,7 +26,7 @@ if (isset($_POST['url'])) {
     $html = @file_get_contents($url);
 
     if ($html === FALSE) {
-        die("Failed to fetch URL content.");
+        die("❌ Failed to fetch URL content.");
     }
 
     $extractedText = cleanExtractedText($html);
@@ -37,14 +37,29 @@ if (isset($_POST['url'])) {
         $stmt->bind_param("sss", $sourceType, $url, $extractedText);
 
         if ($stmt->execute()) {
-            echo "Text extracted from URL and saved successfully!";
-        } else {
-            echo "Error saving text: " . $stmt->error;
-        }
+            echo "✅ Text extracted from URL and saved successfully!";
 
+            $descriptorSpec = [
+                0 => ["pipe", "r"],  
+                1 => ["pipe", "w"],  
+                2 => ["pipe", "w"]
+            ];
+
+            $process = proc_open("python3 /var/www/projects/s25-03/html/v0/public/process_text.py", $descriptorSpec, $pipes);
+
+            if (is_resource($process)) {
+                fclose($pipes[0]);
+                fclose($pipes[1]);
+                fclose($pipes[2]);
+                proc_close($process);
+            }
+
+        } else {
+            echo "❌ Error saving text: " . $stmt->error;
+        }
         $stmt->close();
     } else {
-        echo "No meaningful text found on the URL.";
+        echo "⚠️ No meaningful text found on the URL.";
     }
 }
 

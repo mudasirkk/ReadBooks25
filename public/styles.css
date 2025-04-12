@@ -111,6 +111,23 @@ button:hover {
     background-color: #0056b3;
 }
 
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 18px;
+    text-align: left;
+}
+
+th, td {
+    padding: 12px;
+    border: 1px solid #ddd;
+}
+
+th {
+    background-color: #f4f4f4;
+}
+
 footer {
     background-color: #4CAF50; 
     color: white;
@@ -121,3 +138,4 @@ footer {
     box-shadow: 0px -2px 5px rgba(0, 0, 0, 0.1);
     margin-top: auto; 
 }
+
