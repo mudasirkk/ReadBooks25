@@ -7,9 +7,10 @@ require_role('expert');
 <html>
 <head>
     <title>Expert Dashboard</title>
+    <link rel="stylesheet" href="../styles.css">
 </head>
 <body>
-    <h2>Welcome, Expert <?php echo $_SESSION['username']; ?>!</h2>
+    <h2>Welcome, <?php echo $_SESSION['username']; ?>!</h2>
 
     <ul>
         <li><a href="manage_terms.php">Manage Terms</a></li>
