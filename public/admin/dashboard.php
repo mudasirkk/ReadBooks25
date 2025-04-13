@@ -14,7 +14,7 @@ require_role('admin');
     <h2>Welcome, <?php echo $_SESSION['username']; ?>!</h2>
 
     <ul>
-        <li><a href="manage_users.php">Add New User</a></li>
+        <li><a href="manage_users.php">Manage Users</a></li>
         <li><a href="../expert/dashboard.php">Manage Knowledge Base (Expert Mode)</a></li>
         <li><a href="../logout.php">Logout</a></li>
     </ul>
