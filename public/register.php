@@ -1,5 +1,5 @@
 <?php
-require_once 'includes/db.php';
+require_once '../includes/db.php';
 
 $success = '';
 $error = '';
@@ -36,6 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html>
 <head>
     <title>Register</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <h2>Create an Account</h2>

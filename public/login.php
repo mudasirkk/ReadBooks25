@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once 'includes/db.php';
+require_once '../includes/db.php';
 
 $error = '';
 
@@ -43,6 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html>
 <head>
     <title>Login</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <h2>Login</h2>
