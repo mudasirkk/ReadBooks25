@@ -3,6 +3,7 @@ require_once 'includes/db.php';
 
 $error = '';
 $success = '';
+$username = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = trim($_POST['username']);
@@ -28,6 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             if ($insert->execute()) {
                 $success = "Account created successfully! You can now <a href='public/login.php'>log in</a>.";
+                $username = '';
             } else {
                 $error = "Failed to register user.";
             }
@@ -46,20 +48,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="container">
         <h2>User Registration</h2>
 
-        <?php if ($error): ?>
-            <p class="error"><?php echo $error; ?></p>
-        <?php endif; ?>
-
         <?php if ($success): ?>
-            <p class="success"><?php echo $success; ?></p>
-        <?php else: ?>
-            <form method="POST">
-                <input type="text" name="username" placeholder="Username" required><br>
-                <input type="password" name="password" placeholder="Password" required><br>
-                <input type="password" name="confirm_password" placeholder="Confirm Password" required><br>
-                <button type="submit">Register</button>
-            </form>
-        <?php endif; ?>
-    </div>
+        <p class="success"><?= $success; ?></p>
+    <?php else: ?>
+        <form method="POST">
+            <input type="text" name="username" placeholder="Username" required
+                   value="<?= htmlspecialchars($username, ENT_QUOTES, 'UTF-8'); ?>"><br>
+
+            <input type="password" name="password" placeholder="Password" required><br>
+            <input type="password" name="confirm_password" placeholder="Confirm Password" required><br>
+            <button type="submit">Register</button>
+        </form>
+    <?php endif; ?>
+</div>
 </body>
 </html>

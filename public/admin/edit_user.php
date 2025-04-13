@@ -3,13 +3,13 @@ require_once '../includes/auth.php';
 require_role('admin');
 require_once '../includes/db.php';
 
-$id = intval($_GET['id'] ?? 0);
+$id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT) ?? 0;
 $message = '';
 $errors = [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $newUsername = trim($_POST['username']);
-    $newRole = $_POST['role'];
+    $newUsername = trim(filter_input(INPUT_POST, 'username', FILTER_SANITIZE_STRING));
+    $newRole = filter_input(INPUT_POST, 'role', FILTER_SANITIZE_STRING);
 
     if (!in_array($newRole, ['user', 'expert'])) {
         $errors[] = "❌ Invalid role. Only 'user' or 'expert' allowed.";
@@ -57,15 +57,15 @@ $stmt->fetch();
     <h2>Edit User</h2>
 
     <?php foreach ($errors as $error): ?>
-        <p style="color:red;"><?= $error ?></p>
+        <p style="color:red;"><?= htmlspecialchars($error, ENT_QUOTES, 'UTF-8') ?></p>
     <?php endforeach; ?>
 
     <?php if ($message): ?>
-        <p style="color:green;"><?= $message ?></p>
+        <p style="color:green;"><?= htmlspecialchars($message, ENT_QUOTES, 'UTF-8') ?></p>
     <?php endif; ?>
 
     <form method="POST">
-        <input type="text" name="username" value="<?= htmlspecialchars($username); ?>" required><br><br>
+        <input type="text" name="username" value="<?= htmlspecialchars($username, ENT_QUOTES, 'UTF-8'); ?>" required><br><br>
 
         <select name="role" required>
             <option value="user" <?= $role === 'user' ? 'selected' : '' ?>>User</option>
