@@ -1,33 +1,37 @@
 <?php
-require_once '../includes/db.php';
+require_once 'includes/db.php';
 
-$success = '';
 $error = '';
+$success = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = trim($_POST['username']);
-    $password = $_POST['password'];
-    $role = $_POST['role'];
+    $password = trim($_POST['password']);
+    $confirm = trim($_POST['confirm_password']);
 
-    if ($username && $password && $role) {
-        $valid_roles = ['admin', 'expert', 'user'];
+    if ($password !== $confirm) {
+        $error = "Passwords do not match.";
+    } else {
+        $stmt = $conn->prepare("SELECT id FROM p_users WHERE username = ?");
+        $stmt->bind_param("s", $username);
+        $stmt->execute();
+        $stmt->store_result();
 
-        if (!in_array($role, $valid_roles)) {
-            $error = "Invalid role selected.";
+        if ($stmt->num_rows > 0) {
+            $error = "Username already taken.";
         } else {
             $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+            $role = 'user'; // Force role to "user" only on public registration
 
-            $stmt = $conn->prepare("INSERT INTO p_users (username, password, role) VALUES (?, ?, ?)");
-            $stmt->bind_param("sss", $username, $hashedPassword, $role);
+            $insert = $conn->prepare("INSERT INTO p_users (username, password, role) VALUES (?, ?, ?)");
+            $insert->bind_param("sss", $username, $hashedPassword, $role);
 
-            if ($stmt->execute()) {
-                $success = "User registered successfully!";
+            if ($insert->execute()) {
+                $success = "Account created successfully! You can now <a href='public/login.php'>log in</a>.";
             } else {
-                $error = "Username already exists or registration failed.";
+                $error = "Failed to register user.";
             }
         }
-    } else {
-        $error = "All fields are required.";
     }
 }
 ?>
@@ -35,35 +39,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Register</title>
+    <title>User Registration</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h2>Create an Account</h2>
+    <div class="container">
+        <h2>User Registration</h2>
 
-    <?php if ($success): ?>
-        <p style="color: green;"><?php echo $success; ?></p>
-    <?php elseif ($error): ?>
-        <p style="color: red;"><?php echo $error; ?></p>
-    <?php endif; ?>
+        <?php if ($error): ?>
+            <p class="error"><?php echo $error; ?></p>
+        <?php endif; ?>
 
-    <form method="POST">
-        <label>Username:</label><br>
-        <input type="text" name="username" required><br><br>
-
-        <label>Password:</label><br>
-        <input type="password" name="password" required><br><br>
-
-        <label>Role:</label><br>
-        <select name="role" required>
-            <option value="user">User</option>
-            <option value="expert">Expert</option>
-            <option value="admin">Admin</option>
-        </select><br><br>
-
-        <button type="submit">Register</button>
-    </form>
-
-    <p><a href="login.php">Already have an account? Log in</a></p>
+        <?php if ($success): ?>
+            <p class="success"><?php echo $success; ?></p>
+        <?php else: ?>
+            <form method="POST">
+                <input type="text" name="username" placeholder="Username" required><br>
+                <input type="password" name="password" placeholder="Password" required><br>
+                <input type="password" name="confirm_password" placeholder="Confirm Password" required><br>
+                <button type="submit">Register</button>
+            </form>
+        <?php endif; ?>
+    </div>
 </body>
 </html>

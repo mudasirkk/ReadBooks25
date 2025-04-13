@@ -1,16 +1,13 @@
 <?php
 session_start();
 require_once 'includes/db.php';
-if (!$conn) {
-    die("Database connection failed.");
-} // Testing
 
 
 $error = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = trim($_POST['username']);
-    $password = $_POST['password'];
+    $password = trim($_POST['password']);
 
     $stmt = $conn->prepare("SELECT id, password, role FROM p_users WHERE username = ?");
     $stmt->bind_param("s", $username);
@@ -20,7 +17,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($stmt->num_rows === 1) {
         $stmt->bind_result($id, $hashedPassword, $role);
         $stmt->fetch();
-        echo "<pre>Hash from DB: $hashedPassword</pre>"; // Testing
 
         if (password_verify($password, $hashedPassword)) {
             $_SESSION['user_id'] = $id;
@@ -28,11 +24,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['role'] = $role;
 
             if ($role === 'admin') {
-                header("Location:../admin/dashboard.php");
+                header("Location:../public/admin/dashboard.php");
             } elseif ($role === 'expert') {
-                header("Location: ../expert/dashboard.php");
+                header("Location: ../public/expert/dashboard.php");
             } else {
-                header("Location: ../user/dashboard.php");
+                header("Location: ../public/user/dashboard.php");
             }
             exit;
         } else {

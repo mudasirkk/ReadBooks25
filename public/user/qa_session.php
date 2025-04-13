@@ -1,6 +1,6 @@
 <?php
-require_once '../includes/auth.php';
 require_role('user');
+require_once '../includes/auth.php';
 require_once '../includes/db.php';
 
 $answer = '';
@@ -57,9 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
         <p><a href="../logout.php">Logout</a></p>
     </div>
+    <?php include '../includes/footer.php'; ?>
 
-    <footer>
-        <p>© 2025 Read Books Project</p>
-    </footer>
 </body>
 </html>
