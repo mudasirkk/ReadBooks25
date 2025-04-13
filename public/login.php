@@ -1,6 +1,10 @@
 <?php
 session_start();
 require_once 'includes/db.php';
+if (!$conn) {
+    die("Database connection failed.");
+} // Testing
+
 
 $error = '';
 
@@ -16,6 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($stmt->num_rows === 1) {
         $stmt->bind_result($id, $hashedPassword, $role);
         $stmt->fetch();
+        echo "<pre>Hash from DB: $hashedPassword</pre>"; // Testing
 
         if (password_verify($password, $hashedPassword)) {
             $_SESSION['user_id'] = $id;
@@ -44,6 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <title>Login</title>
     <link rel="stylesheet" href="styles.css">
+</head>
 
 <body>
     <h2>Login</h2>
