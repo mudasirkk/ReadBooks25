@@ -23,13 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['username'] = $username;
             $_SESSION['role'] = $role;
 
-            if ($role === 'admin') {
-                header("Location:../public/admin/dashboard.php");
-            } elseif ($role === 'expert') {
-                header("Location: ../public/expert/dashboard.php");
-            } else {
-                header("Location: ../public/index.html");
-            }
+            header("Location: ../index.php");
             exit;
         } else {
             $error = "Incorrect password.";
