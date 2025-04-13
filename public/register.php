@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $error = "Username already taken.";
         } else {
             $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-            $role = 'user'; // Force role to "user" only on public registration
+            $role = 'user'; 
 
             $insert = $conn->prepare("INSERT INTO p_users (username, password, role) VALUES (?, ?, ?)");
             $insert->bind_param("sss", $username, $hashedPassword, $role);

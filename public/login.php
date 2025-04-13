@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             } elseif ($role === 'expert') {
                 header("Location: ../public/expert/dashboard.php");
             } else {
-                header("Location: ../public/user/dashboard.php");
+                header("Location: ../public/index.html");
             }
             exit;
         } else {
