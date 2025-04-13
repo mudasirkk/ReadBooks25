@@ -7,9 +7,9 @@ $success = '';
 $error = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $condition = trim($_POST['condition']);
-    $result_text = trim($_POST['result']);
-    $rule_id = $_POST['id'] ?? null;
+    $condition = htmlspecialchars(trim($_POST['condition']), ENT_QUOTES, 'UTF-8');
+    $result_text = htmlspecialchars(trim($_POST['result']), ENT_QUOTES, 'UTF-8');
+    $rule_id = isset($_POST['id']) ? intval($_POST['id']) : null;
 
     if ($condition && $result_text) {
         if (!$rule_id) {
