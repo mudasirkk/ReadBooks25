@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once '/../includes/db.php';
+require_once 'includes/db.php';
 
 $error = '';
 
@@ -23,11 +23,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['role'] = $role;
 
             if ($role === 'admin') {
-                header("Location: admin/dashboard.php");
+                header("Location:../admin/dashboard.php");
             } elseif ($role === 'expert') {
-                header("Location: expert/dashboard.php");
+                header("Location: ../expert/dashboard.php");
             } else {
-                header("Location: user/qa_session.php");
+                header("Location: ../user/dashboard.php");
             }
             exit;
         } else {
@@ -44,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <title>Login</title>
     <link rel="stylesheet" href="styles.css">
-</head>
+
 <body>
     <h2>Login</h2>
 
