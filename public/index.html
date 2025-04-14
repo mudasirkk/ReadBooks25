@@ -13,12 +13,14 @@
         <hr class="header-line">
     </header>
 
+
     <nav>
         <ul>
             <li><a href="index.html">Home</a></li>
             <li><a href="project.html">Project</a></li>
             <li><a href="about.html">About</a></li>
             <li><a href="display_relationships.php">View Relationships</a></li>
+            <li><a href="login.php">Login</a></li>
         </ul>
     </nav>
 
@@ -43,40 +45,38 @@
 
         <hr>
 
-<div class="section">
-    <h2>Ask a Legal Question</h2>
-    <form id="questionForm">
-        <input type="text" id="legalQuestion" placeholder="Enter your legal situation..." required>
-        <button type="submit">Ask</button>
-    </form>
-    <div id="predictionResult" style="margin-top: 10px; font-weight: bold;"></div>
-</div>
+        <div class="section">
+            <h2>Ask a Legal Question</h2>
+            <form id="questionForm">
+                <input type="text" id="legalQuestion" placeholder="Enter your legal situation..." required>
+                <button type="submit">Ask</button>
+            </form>
+            <div id="predictionResult" style="margin-top: 10px; font-weight: bold;"></div>
+        </div>
 
-<script>
-document.getElementById("questionForm").addEventListener("submit", async function(e) {
-    e.preventDefault();
-    const question = document.getElementById("legalQuestion").value;
-    const resultBox = document.getElementById("predictionResult");
+        <script>
+        document.getElementById("questionForm").addEventListener("submit", async function(e) {
+            e.preventDefault();
+            const question = document.getElementById("legalQuestion").value;
+            const resultBox = document.getElementById("predictionResult");
 
-    try {
-        const response = await fetch("http://localhost:5000/predict", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ text: question })
+            try {
+                const response = await fetch("http://localhost:5000/predict", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ text: question })
+                });
+
+                const data = await response.json();
+                resultBox.textContent = `Answer: ${data.answer}`;
+            } catch (error) {
+                resultBox.textContent = "Error connecting to prediction server.";
+            }
         });
-
-        const data = await response.json();
-        resultBox.textContent = `Answer: ${data.answer}`;
-    } catch (error) {
-        resultBox.textContent = "Error connecting to prediction server.";
-    }
-});
-</script>
-
-
+        </script>
     </div>
 
-    <footer>
+     <footer>
         <p>© 2025 Read Books Project</p>
     </footer>
 
