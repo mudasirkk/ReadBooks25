@@ -2,12 +2,11 @@
 session_start();
 require_once 'includes/db.php';
 
-
 $error = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = trim($_POST['username']);
-    $password = trim($_POST['password']);
+    $username = htmlspecialchars(trim($_POST['username']));
+    $password = htmlspecialchars(trim($_POST['password']));
 
     $stmt = $conn->prepare("SELECT id, password, role FROM p_users WHERE username = ?");
     $stmt->bind_param("s", $username);
@@ -19,18 +18,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->fetch();
 
         if (password_verify($password, $hashedPassword)) {
-            $_SESSION['user_id'] = $id;
-            $_SESSION['username'] = $username;
-            $_SESSION['role'] = $role;
-
-            if ($role === 'admin') {
-                header("Location:../public/admin/dashboard.php");
-            } elseif ($role === 'expert') {
-                header("Location: ../public/expert/dashboard.php");
+            if (!in_array($role, ['admin', 'user'])) { // Validate role
+                $error = "Invalid user role.";
             } else {
-                header("Location: ../public/user/dashboard.php");
+                $_SESSION['user_id'] = $id;
+                $_SESSION['username'] = $username;
+                $_SESSION['role'] = $role;
+
+                header("Location: ../index.php");
+                exit;
             }
-            exit;
         } else {
             $error = "Incorrect password.";
         }
@@ -39,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 ?>
-
+ 
 <!DOCTYPE html>
 <html>
 <head>
@@ -51,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <h2>Login</h2>
 
     <?php if ($error): ?>
-        <p style="color:red;"><?php echo $error; ?></p>
+        <p style="color:red;"><?php echo htmlspecialchars($error); ?></p>
     <?php endif; ?>
 
     <form method="POST">

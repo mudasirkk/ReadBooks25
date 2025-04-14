@@ -12,8 +12,9 @@
         <h1>Web-Based Knowledge Extractor</h1>
         <hr class="header-line">
     </header>
+    <?php include 'includes/navbar.php'; ?>
 
-
+<!--
     <nav>
         <ul>
             <li><a href="index.html">Home</a></li>
@@ -23,7 +24,7 @@
             <li><a href="login.php">Login</a></li>
         </ul>
     </nav>
-
+-->
     <div class="container">
         <div class="section">
             <h2>Upload a PDF or Text File</h2>

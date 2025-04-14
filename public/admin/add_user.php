@@ -6,9 +6,9 @@ require_once '../includes/db.php';
 $message = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = trim($_POST['username']);
+    $username = htmlspecialchars(trim($_POST['username']), ENT_QUOTES, 'UTF-8');
     $password = password_hash(trim($_POST['password']), PASSWORD_DEFAULT);
-    $role = $_POST['role'];
+    $role = htmlspecialchars($_POST['role'], ENT_QUOTES, 'UTF-8');
 
     if ($role === 'admin') {
         $message = "You cannot create an admin user.";
@@ -33,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
 <div class="container">
     <h2>Add New User</h2>
-    <?php if ($message) echo "<p>$message</p>"; ?>
+    <?php if ($message) echo "<p>" . htmlspecialchars($message, ENT_QUOTES, 'UTF-8') . "</p>"; ?>
     <form method="POST">
         <input type="text" name="username" placeholder="Username" required><br>
         <input type="password" name="password" placeholder="Password" required><br>
