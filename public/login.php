@@ -18,14 +18,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->fetch();
 
         if (password_verify($password, $hashedPassword)) {
-            if (!in_array($role, ['admin', 'user'])) { // Validate role
-                $error = "Invalid user role.";
+            if ($role === 'admin' && $username !== 'admin1') {
+                $error = "Access denied. Only 'admin1' can log in as admin.";
             } else {
                 $_SESSION['user_id'] = $id;
                 $_SESSION['username'] = $username;
                 $_SESSION['role'] = $role;
 
-                header("Location: ../index.php");
+                header("Location: index.php");  
                 exit;
             }
         } else {
@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <h2>Login</h2>
 
     <?php if ($error): ?>
-        <p style="color:red;"><?php echo htmlspecialchars($error); ?></p>
+        <p style="color:red;"> <?= htmlspecialchars($error); ?> </p>
     <?php endif; ?>
 
     <form method="POST">

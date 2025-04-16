@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $insert->bind_param("sss", $username, $hashedPassword, $role);
 
             if ($insert->execute()) {
-                $success = "Account created successfully! You can now <a href='public/login.php'>log in</a>.";
+                $success = "Account created successfully! You can now <a href='login.php'>log in</a>.";
                 $username = '';
             } else {
                 $error = "Failed to register user.";

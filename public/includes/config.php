@@ -1,3 +1,3 @@
 <?php
-define('BASE_URL', 'http://localhost/readbooks/public/');
+define('BASE_URL', '/p/s25-03/v1/public/');
 ?>

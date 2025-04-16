@@ -7,6 +7,18 @@ $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT) ?? 0;
 $message = '';
 $errors = [];
 
+$check_admin = $conn->prepare("SELECT username FROM p_users WHERE id = ?");
+$check_admin->bind_param("i", $id);
+$check_admin->execute();
+$check_admin->bind_result($target_username);
+$check_admin->fetch();
+$check_admin->close();
+
+if ($target_username === 'admin1') {
+    echo "<h3>❌ Editing the protected admin account is not allowed.</h3>";
+    exit;
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $newUsername = trim(filter_input(INPUT_POST, 'username', FILTER_SANITIZE_STRING));
     $newRole = filter_input(INPUT_POST, 'role', FILTER_SANITIZE_STRING);
