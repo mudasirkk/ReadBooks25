@@ -54,6 +54,7 @@
             </form>
             <div id="predictionResult" style="margin-top: 10px; font-weight: bold;"></div>
         </div>
+<<<<<<< Updated upstream:public/index.php
 
         <script>
         document.getElementById("questionForm").addEventListener("submit", async function(e) {
@@ -75,11 +76,39 @@
             }
         });
         </script>
+=======
+>>>>>>> Stashed changes:public/index.html
     </div>
 
      <footer>
         <p>© 2025 Read Books Project</p>
     </footer>
+
+    <script>
+    document.getElementById("questionForm").addEventListener("submit", async function(e) {
+        e.preventDefault();
+        const question = document.getElementById("legalQuestion").value;
+        const resultBox = document.getElementById("predictionResult");
+
+        try {
+            const formData = new URLSearchParams();
+            formData.append("question", question);
+
+            const response = await fetch("predict.php", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: formData.toString()
+            });
+
+            const data = await response.json();
+            resultBox.textContent = `Answer: ${data.answer}`;
+        } catch (error) {
+            resultBox.textContent = "❌ Error: Could not get prediction.";
+        }
+    });
+    </script>
 
 </body>
 </html>
