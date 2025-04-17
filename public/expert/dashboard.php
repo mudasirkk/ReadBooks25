@@ -1,7 +1,8 @@
 <?php
-require_once '../includes/auth.php';
-require_role('expert');
+require_once '../includes/auth_helpers.php';
+require_any_role('expert', 'admin');
 ?>
+
 
 <!DOCTYPE html>
 <html>

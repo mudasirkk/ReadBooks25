@@ -8,8 +8,8 @@ require_once __DIR__ . '/config.php';
     <ul class="navbar-nav ms-auto">
 
       <li class="nav-item"><a class="nav-link" href="<?= BASE_URL ?>/index.php">Home</a></li>
-      <li class="nav-item"><a class="nav-link" href="<?= BASE_URL ?>/project.html">Project</a></li>
-      <li class="nav-item"><a class="nav-link" href="<?= BASE_URL ?>/about.html">About</a></li>
+      <li class="nav-item"><a class="nav-link" href="<?= BASE_URL ?>/project.php">Project</a></li>
+      <li class="nav-item"><a class="nav-link" href="<?= BASE_URL ?>/about.php">About</a></li>
       <li class="nav-item"><a class="nav-link" href="<?= BASE_URL ?>/display_relationships.php">View Relationships</a></li>
 
       <?php if (is_logged_in()): ?>
@@ -28,9 +28,9 @@ require_once __DIR__ . '/config.php';
           <li class="nav-item"><a class="nav-link" href="<?= BASE_URL ?>/user/qa_session.php">QA Session</a></li>
         <?php endif; ?>
 
-        <li class="nav-item"><a class="nav-link" href="<?= BASE_URL ?>/logout.php">Logout</a></li>
+        <li class="nav-item"><a class="nav-link" href="<?= BASE_URL ?>logout.php">Logout</a>
       <?php else: ?>
-        <li class="nav-item"><a class="nav-link" href="<?= BASE_URL ?>/public/login.php">Login</a></li>
+        <li class="nav-item"><a class="nav-link" href="<?= BASE_URL ?>/login.php">Login</a></li>
       <?php endif; ?>
     </ul>
   </div>

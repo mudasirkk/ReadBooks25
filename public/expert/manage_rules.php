@@ -6,42 +6,71 @@ require_once '../includes/db.php';
 $success = '';
 $error = '';
 
+// Handle POST: Add or Update Rule
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $condition = htmlspecialchars(trim($_POST['condition']), ENT_QUOTES, 'UTF-8');
-    $result_text = htmlspecialchars(trim($_POST['result']), ENT_QUOTES, 'UTF-8');
-    $rule_id = isset($_POST['id']) ? intval($_POST['id']) : null;
+    $condition = trim($_POST['condition']);
+    $result = trim($_POST['result']);
+    $rule_id = $_POST['id'] ?? null;
 
-    if ($condition && $result_text) {
+    if ($condition && $result) {
         if (!$rule_id) {
-            $check = $conn->prepare("SELECT id FROM conditional_knowledge WHERE condition_text = ? AND result_text = ?");
-            $check->bind_param("ss", $condition, $result_text);
+            // Avoid duplicate rules
+            $check = $conn->prepare("SELECT id FROM conditional_knowledge WHERE condition_if = ? AND consequence_then = ?");
+            $check->bind_param("ss", $condition, $result);
             $check->execute();
             $check->store_result();
             if ($check->num_rows > 0) {
                 $error = "❌ This rule already exists.";
             }
+            $check->close();
         }
 
         if (!$error) {
             if ($rule_id) {
-                $stmt = $conn->prepare("UPDATE conditional_knowledge SET condition_text=?, result_text=? WHERE id=?");
-                $stmt->bind_param("ssi", $condition, $result_text, $rule_id);
-                $stmt->execute() ? $success = "✅ Rule updated." : $error = "❌ Update failed.";
+                $stmt = $conn->prepare("UPDATE conditional_knowledge SET condition_if=?, consequence_then=? WHERE id=?");
+                $stmt->bind_param("ssi", $condition, $result, $rule_id);
+                if ($stmt->execute()) {
+                    header("Location: manage_rules.php?updated=1");
+                    exit;
+                } else {
+                    $error = "❌ Update failed.";
+                }
+                $stmt->close();
             } else {
-                $stmt = $conn->prepare("INSERT INTO conditional_knowledge (condition_text, result_text) VALUES (?, ?)");
-                $stmt->bind_param("ss", $condition, $result_text);
+                $stmt = $conn->prepare("INSERT INTO conditional_knowledge (condition_if, consequence_then) VALUES (?, ?)");
+                $stmt->bind_param("ss", $condition, $result);
                 $stmt->execute() ? $success = "✅ Rule added!" : $error = "❌ Failed to add rule.";
+                $stmt->close();
             }
         }
     } else {
-        $error = "❌ All fields required.";
+        $error = "❌ All fields are required.";
     }
 }
 
+// Handle Delete
 if (isset($_GET['delete'])) {
     $id = intval($_GET['delete']);
     $conn->query("DELETE FROM conditional_knowledge WHERE id = $id");
-    $success = "Rule deleted.";
+    $success = "✅ Rule deleted.";
+}
+
+// Handle post-update redirect
+if (isset($_GET['updated'])) {
+    $success = "✅ Rule updated.";
+}
+
+// Handle edit form population
+$edit_id = $_GET['edit'] ?? '';
+$edit_cond = '';
+$edit_result = '';
+if ($edit_id) {
+    $stmt = $conn->prepare("SELECT condition_if, consequence_then FROM conditional_knowledge WHERE id=?");
+    $stmt->bind_param("i", $edit_id);
+    $stmt->execute();
+    $stmt->bind_result($edit_cond, $edit_result);
+    $stmt->fetch();
+    $stmt->close();
 }
 ?>
 
@@ -53,57 +82,48 @@ if (isset($_GET['delete'])) {
 </head>
 <body>
     <div class="container">
-    <h2>Manage If-Then Rules</h2>
-    <?php if ($success) echo "<p class='success'>$success</p>"; ?>
-    <?php if ($error) echo "<p class='error'>$error</p>"; ?>
+        <h2>Manage If-Then Rules</h2>
+        
+        <?php if ($success) echo "<p class='success'>$success</p>"; ?>
+        <?php if ($error) echo "<p class='error'>$error</p>"; ?>
 
-    <?php
-    $edit_id = $_GET['edit'] ?? '';
-    $edit_cond = '';
-    $edit_result = '';
+        <form method="POST">
+            <input type="hidden" name="id" value="<?= htmlspecialchars($edit_id) ?>">
+            <input type="text" name="condition" placeholder="IF condition..." value="<?= htmlspecialchars($edit_cond) ?>" required>
+            <input type="text" name="result" placeholder="THEN result..." value="<?= htmlspecialchars($edit_result) ?>" required>
+            <button type="submit"><?= $edit_id ? 'Update' : 'Add' ?> Rule</button>
+        </form>
 
-    if ($edit_id) {
-        $stmt = $conn->prepare("SELECT condition_text, result_text FROM conditional_knowledge WHERE id=?");
-        $stmt->bind_param("i", $edit_id);
-        $stmt->execute();
-        $stmt->bind_result($edit_cond, $edit_result);
-        $stmt->fetch();
-    }
-    ?>
+        <table>
+            <thead>
+                <tr>
+                    <th>IF</th>
+                    <th>THEN</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            <?php
+            $result = $conn->query("SELECT id, condition_if, consequence_then FROM conditional_knowledge");
+            if ($result) {
+                while ($row = $result->fetch_assoc()) {
+                    echo "<tr>
+                            <td>" . htmlspecialchars($row['condition_if']) . "</td>
+                            <td>" . htmlspecialchars($row['consequence_then']) . "</td>
+                            <td>
+                                <a href='?edit={$row['id']}'>Edit</a> |
+                                <a href='?delete={$row['id']}' onclick='return confirm(\"Delete this rule?\")'>Delete</a>
+                            </td>
+                        </tr>";
+                }
+            } else {
+                echo "<tr><td colspan='3'>❌ Failed to fetch rules.</td></tr>";
+            }
+            ?>
+            </tbody>
+        </table>
 
-    <form method="POST">
-        <input type="hidden" name="id" value="<?= htmlspecialchars($edit_id) ?>">
-        <input type="text" name="condition" placeholder="IF condition..." value="<?= htmlspecialchars($edit_cond) ?>" required>
-        <input type="text" name="result" placeholder="THEN result..." value="<?= htmlspecialchars($edit_result) ?>" required>
-        <button type="submit" name="add"><?= $edit_id ? 'Update' : 'Add' ?> Rule</button>
-    </form>
-
-    <table>
-        <thead>
-            <tr>
-                <th>IF</th>
-                <th>THEN</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        <?php
-        $result = $conn->query("SELECT id, condition_text, result_text FROM conditional_knowledge");
-        while ($row = $result->fetch_assoc()) {
-            echo "<tr>
-                    <td>{$row['condition_text']}</td>
-                    <td>{$row['result_text']}</td>
-                    <td>
-                        <a href='?edit={$row['id']}'>Edit</a> |
-                        <a href='?delete={$row['id']}' onclick='return confirm(\"Delete this rule?\")'>Delete</a>
-                    </td>
-                  </tr>";
-        }
-        ?>
-        </tbody>
-    </table>
-
-    <p><a href="dashboard.php">Back to Dashboard</a></p>
+        <p><a href="dashboard.php">← Back to Dashboard</a></p>
     </div>
 </body>
 </html>

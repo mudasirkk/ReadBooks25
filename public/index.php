@@ -13,12 +13,12 @@ require_once 'includes/config.php';
 </head>
 <body>
 
-<?php include 'includes/navbar.php'; ?>
-
 <header>
     <h1>Web-Based Knowledge Extractor</h1>
     <hr class="header-line">
 </header>
+
+<?php include 'includes/navbar.php'; ?>
 
 <div class="container">
     <?php if (is_logged_in()): ?>
