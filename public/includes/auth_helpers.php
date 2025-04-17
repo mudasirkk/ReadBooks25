@@ -3,32 +3,44 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-function require_role($role) {
-    if (!isset($_SESSION['role']) || $_SESSION['role'] !== $role) {
-        header("Location: ../public/login.php");
-        exit;
+if (!function_exists('require_role')) {
+    function require_role($role) {
+        if (!isset($_SESSION['role']) || $_SESSION['role'] !== $role) {
+            header("Location: ../public/login.php");
+            exit;
+        }
     }
 }
 
-function require_any_role(...$roles) {
-    if (!isset($_SESSION['role']) || !in_array($_SESSION['role'], $roles)) {
-        header("Location: ../public/login.php");
-        exit;
+if (!function_exists('require_any_role')) {
+    function require_any_role(...$roles) {
+        if (!isset($_SESSION['role']) || !in_array($_SESSION['role'], $roles)) {
+            header("Location: ../public/login.php");
+            exit;
+        }
     }
 }
 
-function is_logged_in() {
-    return isset($_SESSION['role']);
+if (!function_exists('is_logged_in')) {
+    function is_logged_in() {
+        return isset($_SESSION['role']);
+    }
 }
 
-function is_admin() {
-    return isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
+if (!function_exists('is_admin')) {
+    function is_admin() {
+        return $_SESSION['role'] === 'admin';
+    }
 }
 
-function is_expert() {
-    return isset($_SESSION['role']) && $_SESSION['role'] === 'expert';
+if (!function_exists('is_expert')) {
+    function is_expert() {
+        return $_SESSION['role'] === 'expert';
+    }
 }
 
-function is_user() {
-    return isset($_SESSION['role']) && $_SESSION['role'] === 'user';
+if (!function_exists('is_user')) {
+    function is_user() {
+        return $_SESSION['role'] === 'user';
+    }
 }

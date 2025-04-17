@@ -81,8 +81,9 @@ if (isset($_GET['delete'])) {
     <link rel="stylesheet" href="../styles.css">
 </head>
 <body>
+<?php include '../includes/navbar.php'; ?>
 <div class="container">
-    <h2>Manage Terms</h2>
+    <h2 class="section-title">Manage Terms</h2>
     <?php if ($success) echo "<p class='success'>$success</p>"; ?>
     <?php if ($error) echo "<p class='error'>$error</p>"; ?>
 
@@ -93,37 +94,39 @@ if (isset($_GET['delete'])) {
         <button type="submit" name="add"> <?= $edit_id ? 'Update' : 'Add' ?> Term</button>
     </form>
 
-    <table>
-        <thead>
-            <tr>
-                <th>Term</th>
-                <th>Description</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        <?php
-        $result = $conn->query("SELECT id, term, description FROM terminology");
-
-        if ($result) {
-            while ($row = $result->fetch_assoc()) {
-                echo "<tr>
-                        <td>" . htmlspecialchars($row['term']) . "</td>
-                        <td>" . htmlspecialchars($row['description']) . "</td>
-                        <td>
-                            <a href='?edit={$row['id']}'>Edit</a> |
-                            <a href='?delete={$row['id']}' onclick='return confirm(\"Delete this term?\")'>Delete</a>
-                        </td>
-                      </tr>";
-            }
-        } else {
-            echo "<tr><td colspan='3'>❌ Failed to fetch terms: " . $conn->error . "</td></tr>";
+<table>
+    <thead>
+        <tr>
+            <th style="background-color: #4CAF50; color: white;">Term</th>
+            <th style="background-color: #4CAF50; color: white;">Description</th>
+            <th style="background-color: #4CAF50; color: white;">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    <?php
+    $result = $conn->query("SELECT id, term, description FROM terminology");
+    if ($result) {
+        while ($row = $result->fetch_assoc()) {
+            echo "<tr>
+                    <td>" . htmlspecialchars($row['term']) . "</td>
+                    <td>" . htmlspecialchars($row['description']) . "</td>
+                    <td>
+                        ✏️ <a href='?edit={$row['id']}' style='color:#007bff;'>Edit</a> |
+                        ❌ <a href='?delete={$row['id']}' onclick='return confirm(\"Delete this term?\")' style='color:#dc3545;'>Delete</a>
+                    </td>
+                  </tr>";
         }
-        ?>
-        </tbody>
-    </table>
+    } else {
+        echo "<tr><td colspan='3'>❌ Failed to fetch terms: " . $conn->error . "</td></tr>";
+    }
+    ?>
+    </tbody>
+</table>
 
-    <p><a href="dashboard.php">← Back to Dashboard</a></p>
+
 </div>
+<footer>
+    <p>© 2025 Read Books Project</p>
+</footer>
 </body>
 </html>
