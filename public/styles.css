@@ -58,8 +58,8 @@ nav ul li a:hover {
 }
 
 .container {
-    max-width: 500px;
-    margin: auto; 
+    max-width: 1100px;
+    margin: 0 auto; 
     background: white;
     padding: 25px;
     border-radius: 10px;

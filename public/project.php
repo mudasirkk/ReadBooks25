@@ -18,26 +18,43 @@ require_once 'includes/config.php';
         <hr class="header-line">
     </header>
 
-<?php include 'includes/navbar.php'; ?>
+    <?php include 'includes/navbar.php'; ?>
 
 <div class="container">
-    <div class="section">
+    <section class="section">
         <h2 class="section-title">What is this Project?</h2>
-        <p>
+        <p style="text-align: center; font-size: 16px; line-height: 1.6;">
             This is a web-based tool designed to help users extract legal information from PDFs, text files, and online sources.
-            This system is particularly useful for legal professionals, researchers, and students who need to analyze legal documents efficiently.
+            This system is particularly useful for <strong>legal professionals</strong>, <strong>researchers</strong>, and <strong>students</strong>
+            who need to analyze property related legal documents efficiently.
         </p>
-    </div>
+    </section>
 
-    <br>
+    <hr>
 
-    <div class="section">
+    <section class="section">
         <h2 class="section-title">Features</h2>
-        <ul>
-            <li><strong class="underline">Upload Legal Documents:</strong> Easily upload PDFs or text files to extract legal content.</li>
-            <li><strong class="underline">Extract from URLs:</strong> Enter a website URL to extract relevant legal information.</li>
+        <ul style="font-size: 16px; line-height: 1.8;">
+            <li><strong>Upload Legal Documents:</strong> Easily upload PDFs or text files to extract legal content.</li>
+            <li><strong>Extract from URLs:</strong> Enter a website URL to extract relevant legal information.</li>
+            <li><strong>Role-Based Access:</strong> Admins manage users, experts maintain legal terms and rules, and regular users ask legal questions.</li>
+            <li><strong>Legal QA:</strong> Ask legal yes/no questions and receive answers powered by a custom-trained machine learning model.</li>
+            <li><strong>History Tracking:</strong> Logged-in users can see a record of their previous legal questions and answers.</li>
         </ul>
-    </div>
+    </section>
+
+    <hr>
+
+    <section class="section">
+        <h2 class="section-title">Technology Stack</h2>
+        <ul style="font-size: 16px; line-height: 1.8;">
+            <li>Frontend: HTML, CSS, JavaScript </li>
+            <li>Backend: PHP + MySQL</li>
+            <li>Legal Intelligence: Python + TensorFlow</li>
+            <li>PDF Parsing: Smalot PDF Parser</li>
+            <li>Text Processing: NLP with spaCy + custom scripts</li>
+        </ul>
+    </section>
 </div>
 
 <footer>

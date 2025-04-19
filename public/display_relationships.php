@@ -58,7 +58,7 @@ $result = $conn->query($sql);
 </div>
 
 <footer>
-    <p>© 2025 Read Books Project</p>
+    <p>© 2025 Legal KB Project</p>
 </footer>
 </body>
 </html>

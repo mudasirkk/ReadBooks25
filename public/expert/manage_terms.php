@@ -8,10 +8,21 @@ $error = '';
 $edit_id = '';
 $edit_term = '';
 $edit_desc = '';
+$search = $_GET['search'] ?? '';
 
 if (isset($_GET['updated'])) {
     $success = "✅ Term updated.";
 }
+
+if ($search) {
+    $stmt = $conn->prepare("SELECT id, term, description FROM terminology WHERE term LIKE ? OR description LIKE ?");
+    $like = "%$search%";
+    $stmt->bind_param("ss", $like, $like);
+} else {
+    $stmt = $conn->prepare("SELECT id, term, description FROM terminology");
+}
+$stmt->execute();
+$result = $stmt->get_result();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $term = trim($_POST['term']);
@@ -79,9 +90,104 @@ if (isset($_GET['delete'])) {
 <head>
     <title>Manage Terms</title>
     <link rel="stylesheet" href="../styles.css">
+    <style>
+        table {
+            width: 100%;
+            table-layout: fixed;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 10px;
+            vertical-align: top;
+            text-align: left;
+        }
+
+        td:nth-child(2) {
+            width: 65%;
+        }
+
+        td:nth-child(3) {
+            white-space: nowrap;
+            text-align: center;
+        }
+
+        .action-btn {
+            padding: 5px 10px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 14px;
+            display: inline-block;
+        }
+
+        .edit-btn {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        .edit-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .delete-btn {
+            background-color: #e74c3c;
+            color: #fff;
+        }
+
+        .delete-btn:hover {
+            background-color: #c0392b;
+        }
+
+        .icon {
+            margin-right: 5px;
+        }
+
+        .action-pair {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .action-separator {
+            color: #333;
+            font-weight: bold;
+        }
+
+        input[type="text"] {
+            width: 200px;
+            margin-bottom: 10px;
+        }
+
+        .search-bar {
+            margin: 20px 0;
+        }
+
+        .search-bar input[type="text"] {
+            width: 250px;
+            padding: 6px;
+        }
+
+        .search-bar button {
+            padding: 6px 12px;
+            font-weight: bold;
+        }
+
+        button[type="submit"] {
+            margin-top: 5px;
+        }
+    </style>
 </head>
 <body>
+
+<header>
+    <h1>Edit Terms</h1>
+    <hr class="header-line">
+</header>
+
 <?php include '../includes/navbar.php'; ?>
+
 <div class="container">
     <h2 class="section-title">Manage Terms</h2>
     <?php if ($success) echo "<p class='success'>$success</p>"; ?>
@@ -91,42 +197,59 @@ if (isset($_GET['delete'])) {
         <input type="hidden" name="id" value="<?= htmlspecialchars($edit_id) ?>">
         <input type="text" name="term" placeholder="Term" value="<?= htmlspecialchars($edit_term) ?>" required>
         <input type="text" name="description" placeholder="Description" value="<?= htmlspecialchars($edit_desc) ?>" required>
-        <button type="submit" name="add"> <?= $edit_id ? 'Update' : 'Add' ?> Term</button>
+        <button type="submit" name="add"><?= $edit_id ? 'Update' : 'Add' ?> Term</button>
     </form>
 
-<table>
-    <thead>
-        <tr>
-            <th style="background-color: #4CAF50; color: white;">Term</th>
-            <th style="background-color: #4CAF50; color: white;">Description</th>
-            <th style="background-color: #4CAF50; color: white;">Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-    <?php
-    $result = $conn->query("SELECT id, term, description FROM terminology");
-    if ($result) {
-        while ($row = $result->fetch_assoc()) {
-            echo "<tr>
-                    <td>" . htmlspecialchars($row['term']) . "</td>
-                    <td>" . htmlspecialchars($row['description']) . "</td>
-                    <td>
-                        ✏️ <a href='?edit={$row['id']}' style='color:#007bff;'>Edit</a> |
-                        ❌ <a href='?delete={$row['id']}' onclick='return confirm(\"Delete this term?\")' style='color:#dc3545;'>Delete</a>
-                    </td>
-                  </tr>";
+    <hr style="border-top: 2px solid black; margin-top: 20px; margin-bottom: 20px;">
+
+    <form method="GET" class="search-bar">
+        <input type="text" name="search" placeholder="Search term or description..." value="<?= htmlspecialchars($search) ?>">
+        <button type="submit">Search</button>
+    </form>
+
+    <table>
+    <colgroup>
+        <col style="width: 20%;">
+        <col style="width: 58%;">
+        <col style="width: 22%;">
+    </colgroup>
+        <thead>
+            <tr>
+                <th style="background-color: #4CAF50; color: white;">Term</th>
+                <th style="background-color: #4CAF50; color: white;">Description</th>
+                <th style="background-color: #4CAF50; color: white;">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        <?php
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                echo "<tr>
+                        <td>" . htmlspecialchars($row['term']) . "</td>
+                        <td>" . htmlspecialchars($row['description']) . "</td>
+                        <td>
+                            <div class='action-pair'>
+                                <a href='?edit={$row['id']}' class='action-btn edit-btn'>
+                                    <span class='icon'>✏️</span> Edit
+                                </a>
+                                <span class='action-separator'>|</span>
+                                <a href='?delete={$row['id']}' class='action-btn delete-btn' onclick='return confirm(\"Delete this term?\")'>
+                                    <span class='icon'>❌</span> Delete
+                                </a>
+                            </div>
+                        </td>
+                      </tr>";
+            }
+        } else {
+            echo "<tr><td colspan='3'>❌ No terms found.</td></tr>";
         }
-    } else {
-        echo "<tr><td colspan='3'>❌ Failed to fetch terms: " . $conn->error . "</td></tr>";
-    }
-    ?>
-    </tbody>
-</table>
-
-
+        ?>
+        </tbody>
+    </table>
 </div>
+
 <footer>
-    <p>© 2025 Read Books Project</p>
+    <p>© 2025 Legal KB Project</p>
 </footer>
 </body>
 </html>

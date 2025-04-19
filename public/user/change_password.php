@@ -81,7 +81,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </div>
 
 <footer>
-    <p>© 2025 Read Books Project</p>
+    <p>© 2025 Legal KB Project</p>
 </footer>
 
 <script>

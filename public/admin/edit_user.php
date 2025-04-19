@@ -15,7 +15,7 @@ $check_admin->fetch();
 $check_admin->close();
 
 if ($target_username === 'admin1') {
-    echo "<h3>❌ Editing the protected admin account is not allowed.</h3>";
+    echo "<h3 style='text-align: center; margin-top: 50px;'>❌ Editing the protected admin account is not allowed.</h3>";
     exit;
 }
 
@@ -58,36 +58,56 @@ $stmt->fetch();
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>Edit User</title>
     <link rel="stylesheet" href="../styles.css">
 </head>
 <body>
+
+<header>
+    <h1>Edit User</h1>
+    <hr class="header-line">
+</header>
+
 <?php include '../includes/navbar.php'; ?>
+
 <div class="container">
-    <h2>Edit User</h2>
+    <h2 class="section-title">Edit User</h2>
 
     <?php foreach ($errors as $error): ?>
-        <p style="color:red;"><?= htmlspecialchars($error, ENT_QUOTES, 'UTF-8') ?></p>
+        <p style="color:red;"><?= htmlspecialchars($error) ?></p>
     <?php endforeach; ?>
 
     <?php if ($message): ?>
-        <p style="color:green;"><?= htmlspecialchars($message, ENT_QUOTES, 'UTF-8') ?></p>
+        <p style="color:green;"><?= htmlspecialchars($message) ?></p>
     <?php endif; ?>
 
     <form method="POST">
-        <input type="text" name="username" value="<?= htmlspecialchars($username, ENT_QUOTES, 'UTF-8'); ?>" required><br><br>
-
+        <input type="text" name="username" value="<?= htmlspecialchars($username) ?>" required><br><br>
         <select name="role" required>
             <option value="user" <?= $role === 'user' ? 'selected' : '' ?>>User</option>
             <option value="expert" <?= $role === 'expert' ? 'selected' : '' ?>>Expert</option>
         </select><br><br>
-
         <button type="submit">Update User</button>
     </form>
-
-    <p><a href="manage_users.php">← Back to User Management</a></p>
+    <a href="manage_users.php" style="
+        display: inline-block;
+        margin-top: 20px;
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: white;
+        font-weight: bold;
+        text-decoration: none;
+        border-radius: 6px;
+    ">
+         Back to Manage Users
+    </a>
 </div>
+
+<footer>
+    <p>© 2025 Legal KB Project</p>
+</footer>
 </body>
 </html>

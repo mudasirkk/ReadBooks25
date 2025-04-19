@@ -1,6 +1,49 @@
 question_text,label
-Does a deed held in escrow transfer title?,Yes
-Is an unsigned contract legally binding?,No
-Will the buyer get ownership after paying the full amount?,Yes
-Does a deed with a condition transfer title?,Yes
-Can the public access a quasi-public beach?,Yes
+"If legal systems support land markets, does it mean that They promote buying, selling, and leasing of land?",Yes
+"If an individual lies to access a farm to record practices, does it mean that They may be penalized under Ag-Gag laws?",Yes
+Is a title transfer valid if an unsigned contract for land sale is enforceable under all circumstances?,No
+"If a lease is valid even without specifying the land, does it mean that The court assumes the location?",No
+Does ownership change if a person uses land continuously and openly without permission?,Yes
+"If a farmer files under chapter 12, does it mean that They can restructure debt but receive fewer tax benefits?",Yes
+"If a country adopts redistributive agrarian law, does it mean that It may transfer land to landless or small-scale farmers?",Yes
+Is a title transfer valid if farmers can sell land under lien without informing the creditor?,No
+"If a farmer receives tax incentives, does it mean that They are more likely to keep the land in agricultural use?",Yes
+Is a title transfer valid if a deed can transfer title without any writing?,No
+"If unpermitted livestock operations face no regulation, does it mean that Environmental rules do not apply?",No
+"If farmers follow federal commodity programs, does it mean that They receive income supports and face production controls?",Yes
+Is access granted if public can take private land if they use it once?,No
+"If all heirs must be present for probate to start, does it mean that Otherwise, land stays unclaimed?",No
+"If growth policies are adopted, does it mean that They help prevent farmland from being converted?",Yes
+Is a title transfer valid if a deed is given with a condition?,Yes
+"If property lacks a clear title, does it mean that It may be excluded from federal conservation programs?",Yes
+"If a plant pest enters liberia, does it mean that The Ministry of Agriculture can impose a quarantine?",Yes
+Is it legally valid if a lease with no terms or parties named is valid?,No
+"If ag-gag laws always override constitutional free speech protections, does it mean that They are never challenged in court?",No
+Is compensation required if local governments can revoke agricultural easements at any time?,No
+Is it legally valid if zoning laws can be ignored for agricultural operations?,No
+"If a tenant can destroy property improvements without consequence, does it mean that The lease remains valid?",No
+"If a lease includes an oral agreement, does it mean that It may lead to disputes unless documented?",Yes
+Is it legally valid if an area is quarantined?,Yes
+"If urban development pressure increases, does it mean that Farmers may sell land for non-agricultural purposes?",Yes
+"If right-to-farm laws allow farming in national parks, does it mean that Farming cannot be restricted?",No
+Is it legally valid if heirs can ignore probate and sell land immediately?,No
+Is it legally valid if a contract is breached?,Yes
+Are rights affected if ag-gag laws apply even on public land?,No
+"If farmland is zoned for agriculture, does it mean that It cannot be easily developed for housing or business?",Yes
+Is it legally valid if no contract is needed for large equipment leasing?,No
+"If a deed is held in escrow, does it mean that It remains inactive until a future event occurs?",Yes
+Is it legally valid if a farmer enters a contract with a buyer?,Yes
+Is it legally valid if heirs can sell shared land without consent of other heirs?,No
+"If all heirs do not agree on land use, does it mean that The land may be sold through a partition process?",Yes
+"If anyone can enter private farmland at any time, does it mean that They cannot be prosecuted?",No
+"If land is owned by non-residents or corporations, does it mean that Some states may restrict their ability to farm?",Yes
+Is a title transfer valid if the condition in escrow is fulfilled?,Yes
+"If a farmer can refuse inspections from the usda, does it mean that The agency has no authority?",No
+"If a buyer receives farm goods without proper notice, does it mean that They may take them free of a creditor’s claim?",Yes
+Is it legally valid if a farm is in a certified agricultural district?,Yes
+"If ag district status removes all tax obligations, does it mean that The farm pays zero property tax?",No
+Is it legally valid if a farm lease is not in writing?,Yes
+"If right-to-farm allows farming on any land, even if not zoned for it, does it mean that Local zoning cannot apply?",No
+Is it legally valid if a farmer under a conservation easement can subdivide and develop their land?,No
+"If a farmer can use pesticides banned by federal law, does it mean that They face no penalties?",No
+Is the interest protected if a farmer in a certified agricultural district can convert land to a shopping mall?,No
