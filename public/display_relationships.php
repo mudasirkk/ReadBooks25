@@ -24,6 +24,12 @@ $result = $conn->query($sql);
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+
+<header>
+    <h1>Relationships Table</h1>
+    <hr class="header-line">
+</header>
+
 <?php include 'includes/navbar.php'; ?>
 
 <div class="container">

@@ -12,17 +12,49 @@ require_once '../includes/auth_helpers.php';
     <link rel="stylesheet" href="../styles.css">
 </head>
 <body>
+
+<header>
+    <h1>Q&A Session</h1>
+    <hr class="header-line">
+</header>
+
 <?php include '../includes/navbar.php'; ?>
 
 <div class="container">
     <h2 class="section-title">Ask a Legal Question</h2>
 
-    <form id="questionForm" method="POST">
-        <input type="text" id="legalQuestion" name="question" placeholder="Enter your legal situation..." required>
+    <form method="POST">
+        <input type="text" name="question" placeholder="Enter your legal situation..." required>
         <button type="submit">Ask</button>
     </form>
 
-    <div id="predictionResult" style="margin-top: 10px; font-weight: bold;"></div>
+    <div style="margin-top: 15px;">
+        <?php
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['question'])) {
+            $raw_question = $_POST['question'];
+            $escaped_question = escapeshellarg($raw_question);
+            $command = "/home/khalidt2/python39/bin/python3.9 predict.py $escaped_question";
+            $output = shell_exec($command . " 2>&1");
+
+            $data = json_decode($output, true);
+            if (isset($data["answer"])) {
+                $answer = htmlspecialchars($data["answer"]);
+                echo "<p><strong>Answer:</strong> $answer</p>";
+
+                if (isset($_SESSION['user_id'])) {
+                    $user_id = $_SESSION['user_id'];
+                    $stmt = $conn->prepare("INSERT INTO qa_history (user_id, question, answer) VALUES (?, ?, ?)");
+                    $stmt->bind_param("iss", $user_id, $raw_question, $answer);
+                    $stmt->execute();
+                    $stmt->close();
+                }
+            } else {
+                echo "<p style='color:red;'>❌ Error: Could not get prediction.</p>";
+                echo "<pre>" . htmlspecialchars($output) . "</pre>"; // for debugging
+            }
+        }
+        ?>
+    </div>
 
     <?php if (isset($_SESSION['user_id'])): ?>
         <h3 class="section-title">Your Question History</h3>
@@ -54,29 +86,5 @@ require_once '../includes/auth_helpers.php';
 <footer>
     <p>© 2025 Read Books Project</p>
 </footer>
-
-<script>
-document.getElementById("questionForm").addEventListener("submit", async function(e) {
-    e.preventDefault();
-    const question = document.getElementById("legalQuestion").value;
-    const resultBox = document.getElementById("predictionResult");
-
-    try {
-        const formData = new URLSearchParams();
-        formData.append("question", question);
-
-        const response = await fetch("../predict.php", {
-            method: "POST",
-            headers: { "Content-Type": "application/x-www-form-urlencoded" },
-            body: formData.toString()
-        });
-
-        const data = await response.json();
-        resultBox.textContent = `Answer: ${data.answer}`;
-    } catch (error) {
-        resultBox.textContent = "❌ Error: Could not get prediction.";
-    }
-});
-</script>
 </body>
 </html>

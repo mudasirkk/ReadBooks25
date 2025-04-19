@@ -138,51 +138,6 @@ footer {
     box-shadow: 0px -2px 5px rgba(0, 0, 0, 0.1);
     margin-top: auto; 
 }
-
-/* Custom dropdown */
-.navbar-nav {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  
-  .nav-item.dropdown {
-    position: relative;
-  }
-  
-  .nav-link.dropdown-toggle::after {
-    content: ' ▼';
-    font-size: 0.6em;
-  }
-  
-  .dropdown-menu {
-    display: none;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    min-width: 180px;
-    background-color: #333;
-    border-radius: 4px;
-    padding: 0;
-    margin-top: 5px;
-    list-style: none;
-    z-index: 1000;
-  }
-  
-  .dropdown-menu li a {
-    display: block;
-    padding: 10px 15px;
-    color: white;
-    text-decoration: none;
-  }
-  
-  .dropdown-menu li a:hover {
-    background-color: #4CAF50;
-  }
-  
-  .nav-item.dropdown.open .dropdown-menu {
-    display: block;
-  }
   
   table thead th {
     background-color: #4CAF50;
@@ -197,4 +152,10 @@ table td {
     background-color: white;
     padding: 12px;
     border: 1px solid #ddd;
+}
+
+nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
 }

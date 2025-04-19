@@ -4,26 +4,30 @@ session_start();
 require_once 'includes/db.php';
 
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['question'])) {
-    $question = escapeshellarg($_POST['question']);
-    $command = "python predict.py $question";
+    $question = $_POST['question'];
+    $payload = json_encode(["text" => $question]);
 
-    $output = shell_exec($command . " 2>&1");
+    $ch = curl_init("http://localhost:5000/predict");
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+    $response = curl_exec($ch);
+    curl_close($ch);
 
-    file_put_contents("debug_log.txt", "COMMAND: $command\nOUTPUT:\n$output");
-
-    $data = json_decode($output, true);
+    $data = json_decode($response, true);
     if (isset($data["answer"])) {
         $answer = $data["answer"];
-
         $user_id = $_SESSION['user_id'] ?? null;
+
         $stmt = $conn->prepare("INSERT INTO qa_history (user_id, question, answer) VALUES (?, ?, ?)");
-        $stmt->bind_param("iss", $user_id, $_POST['question'], $answer);
+        $stmt->bind_param("iss", $user_id, $question, $answer);
         $stmt->execute();
         $stmt->close();
 
         echo json_encode(["answer" => $answer]);
     } else {
-        echo json_encode(["answer" => "Error", "debug" => $output]);
+        echo json_encode(["answer" => "Error", "debug" => $response]);
     }
 } else {
     echo json_encode(["error" => "Invalid request"]);
