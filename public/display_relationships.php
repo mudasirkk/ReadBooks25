@@ -107,15 +107,12 @@ function linkify_terms($text, $terms) {
     </style>
 </head>
 <body>
-<<<<<<< Updated upstream
-=======
 
 <header>
     <h1>Knowledge Base</h1>
     <hr class="header-line">
 </header>
 
->>>>>>> Stashed changes
 <?php include 'includes/navbar.php'; ?>
 
 <div class="container">
