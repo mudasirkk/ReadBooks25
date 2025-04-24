@@ -96,4 +96,5 @@ require_once __DIR__ . '/config.php';
       <?php endif; ?>
     </ul>
   </div>
+
 </nav>
