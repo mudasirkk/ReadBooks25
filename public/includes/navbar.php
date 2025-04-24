@@ -48,7 +48,7 @@ require_once __DIR__ . '/config.php';
       <li class="nav-item"><a class="nav-link" href="<?= BASE_URL ?>/index.php">Home</a></li>
       <li class="nav-item"><a class="nav-link" href="<?= BASE_URL ?>/project.php">Project</a></li>
       <li class="nav-item"><a class="nav-link" href="<?= BASE_URL ?>/about.php">About</a></li>
-      <li class="nav-item"><a class="nav-link" href="<?= BASE_URL ?>/display_relationships.php">Relationships</a></li>
+      <li class="nav-item"><a class="nav-link" href="<?= BASE_URL ?>/display_relationships.php">Learn</a></li>
 
       <?php if (is_logged_in()): ?>
         <?php if (is_admin()): ?>
