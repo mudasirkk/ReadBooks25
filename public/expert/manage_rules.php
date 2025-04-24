@@ -10,8 +10,22 @@ $edit_cond = '';
 $edit_result = '';
 $search = $_GET['search'] ?? '';
 
+if (isset($_GET['edit'])) {
+    $edit_id = $_GET['edit'];
+    $stmt = $conn->prepare("SELECT condition_if, consequence_then FROM conditional_knowledge WHERE id=?");
+    $stmt->bind_param("i", $edit_id);
+    $stmt->execute();
+    $stmt->bind_result($edit_cond, $edit_result);
+    $stmt->fetch();
+    $stmt->close();
+}
+
 if (isset($_GET['updated'])) {
     $success = "✅ Rule updated.";
+} elseif (isset($_GET['added'])) {
+    $success = "✅ Rule added!";
+} elseif (isset($_GET['deleted'])) {
+    $success = "✅ Rule deleted.";
 }
 
 if ($search) {
@@ -52,11 +66,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $error = "❌ Update failed.";
                 }
                 $stmt->close();
-            } else {
+            }
+             else {
                 $stmt = $conn->prepare("INSERT INTO conditional_knowledge (condition_if, consequence_then) VALUES (?, ?)");
                 $stmt->bind_param("ss", $condition, $result_text);
                 if ($stmt->execute()) {
-                    $success = "✅ Rule added!";
+                    header("Location: manage_rules.php?added=1");
+                    exit;
                 } else {
                     $error = "❌ Failed to add rule.";
                 }
@@ -71,17 +87,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 if (isset($_GET['delete'])) {
     $id = intval($_GET['delete']);
     $conn->query("DELETE FROM conditional_knowledge WHERE id = $id");
-    $success = "✅ Rule deleted.";
-}
-
-if (isset($_GET['edit'])) {
-    $edit_id = $_GET['edit'];
-    $stmt = $conn->prepare("SELECT condition_if, consequence_then FROM conditional_knowledge WHERE id=?");
-    $stmt->bind_param("i", $edit_id);
-    $stmt->execute();
-    $stmt->bind_result($edit_cond, $edit_result);
-    $stmt->fetch();
-    $stmt->close();
+    header("Location: manage_rules.php?deleted=1");
+    exit;
 }
 ?>
 

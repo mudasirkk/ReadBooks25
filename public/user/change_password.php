@@ -1,12 +1,15 @@
-
 <?php
 session_start();
 require_once '../includes/config.php';
 require_once '../includes/db.php';
 require_once '../includes/auth_helpers.php';
 
-if (!is_logged_in() || is_admin()) {
+if (!is_logged_in()) {
     header("Location: ../login.php");
+    exit;
+}
+if (is_admin()) {
+    echo "<!DOCTYPE html><html lang='en'><head><meta charset='UTF-8'><title>Access Denied</title><link rel='stylesheet' href='../styles.css'></head><body><header><h1>Access Denied</h1><hr class='header-line'></header><div class='container'><p style='color:red; font-weight:bold;'>❌ Admins are not allowed to change their password.</p></div><footer><p>© 2025 Legal KB Project</p></footer></body></html>";
     exit;
 }
 

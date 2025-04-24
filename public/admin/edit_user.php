@@ -93,17 +93,18 @@ $stmt->fetch();
         <button type="submit">Update User</button>
     </form>
     <a href="manage_users.php" style="
-        display: inline-block;
-        margin-top: 20px;
-        padding: 10px 20px;
-        background-color: #007bff;
-        color: white;
-        font-weight: bold;
-        text-decoration: none;
-        border-radius: 6px;
-    ">
-         Back to Manage Users
-    </a>
+    display: inline-block;
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    font-weight: bold;
+    text-decoration: none;
+    border-radius: 6px;
+    transition: background-color 0.3s ease;
+    " onmouseover="this.style.backgroundColor='#0056b3'" onmouseout="this.style.backgroundColor='#007bff'">
+    ← Back to Manage Users
+</a>
 </div>
 
 <footer>

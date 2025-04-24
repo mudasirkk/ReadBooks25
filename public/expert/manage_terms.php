@@ -10,8 +10,22 @@ $edit_term = '';
 $edit_desc = '';
 $search = $_GET['search'] ?? '';
 
+if (isset($_GET['edit'])) {
+    $edit_id = $_GET['edit'];
+    $stmt = $conn->prepare("SELECT term, description FROM terminology WHERE id=?");
+    $stmt->bind_param("i", $edit_id);
+    $stmt->execute();
+    $stmt->bind_result($edit_term, $edit_desc);
+    $stmt->fetch();
+    $stmt->close();
+}
+
 if (isset($_GET['updated'])) {
     $success = "✅ Term updated.";
+} elseif (isset($_GET['added'])) {
+    $success = "✅ Term added!";
+} elseif (isset($_GET['deleted'])) {
+    $success = "✅ Term deleted.";
 }
 
 if ($search) {
@@ -46,8 +60,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt = $conn->prepare("UPDATE terminology SET term=?, description=? WHERE id=?");
                 $stmt->bind_param("ssi", $term, $description, $term_id);
                 if ($stmt->execute()) {
-                    header("Location: manage_terms.php?updated=1");
-                    exit;
+                    $success = "✅ Term updated.";
+                    $edit_id = '';
+                    $edit_term = '';
+                    $edit_desc = '';
+                    if ($search) {
+                        $stmt = $conn->prepare("SELECT id, term, description FROM terminology WHERE term LIKE ? OR description LIKE ?");
+                        $like = "%$search%";
+                        $stmt->bind_param("ss", $like, $like);
+                    } else {
+                        $stmt = $conn->prepare("SELECT id, term, description FROM terminology");
+                    }
+                    $stmt->execute();
+                    $result = $stmt->get_result();
                 } else {
                     $error = "❌ Update failed.";
                 }
@@ -56,7 +81,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt = $conn->prepare("INSERT INTO terminology (term, description) VALUES (?, ?)");
                 $stmt->bind_param("ss", $term, $description);
                 if ($stmt->execute()) {
-                    $success = "✅ Term added!";
+                    header("Location: manage_terms.php?added=1");
+                    exit;
                 } else {
                     $error = "❌ Add failed.";
                 }
@@ -68,20 +94,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-if (isset($_GET['edit'])) {
-    $edit_id = $_GET['edit'];
-    $stmt = $conn->prepare("SELECT term, description FROM terminology WHERE id=?");
-    $stmt->bind_param("i", $edit_id);
-    $stmt->execute();
-    $stmt->bind_result($edit_term, $edit_desc);
-    $stmt->fetch();
-    $stmt->close();
-}
-
 if (isset($_GET['delete'])) {
     $id = intval($_GET['delete']);
     $conn->query("DELETE FROM terminology WHERE id = $id");
-    $success = "✅ Term deleted.";
+    header("Location: manage_terms.php?deleted=1");
+    exit;
 }
 ?>
 

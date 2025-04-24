@@ -71,11 +71,13 @@ require_once __DIR__ . '/config.php';
             </div>
           </li>
         <?php endif; ?>
-        
+
         <li class="nav-item"><a class="nav-link" href="<?= BASE_URL ?>/user/qa_session.php">Q&A</a></li>
 
         <li class="dropdown nav-item">
-          <a class="nav-link" href="#">Account</a>
+          <a class="nav-link" href="#">
+            <?= htmlspecialchars($_SESSION['username']) ?> | <?= ucfirst($_SESSION['role']) ?>
+          </a>
           <div class="dropdown-content">
             <a href="#">👤 <?= htmlspecialchars($_SESSION['username']) ?></a>
             <a href="#">🛡️ <?= ucfirst($_SESSION['role']) ?></a>
