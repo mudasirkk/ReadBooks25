@@ -2,20 +2,33 @@
 require_once 'includes/db.php';
 
 $search = $_GET['search'] ?? '';
+$page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+$per_page = isset($_GET['per_page']) ? (int)$_GET['per_page'] : 20;
+$offset = ($page - 1) * $per_page;
 
-// Fetching all Conditionals
+$count_stmt = $search
+    ? $conn->prepare("SELECT COUNT(*) FROM conditional_knowledge WHERE condition_if LIKE ? OR consequence_then LIKE ?")
+    : $conn->prepare("SELECT COUNT(*) FROM conditional_knowledge");
 if ($search) {
-    $stmt = $conn->prepare("SELECT id, condition_if, consequence_then FROM conditional_knowledge WHERE condition_if LIKE ? OR consequence_then LIKE ?");
     $like = "%$search%";
-    $stmt->bind_param("ss", $like, $like);
-} else {
-    $stmt = $conn->prepare("SELECT id, condition_if, consequence_then FROM conditional_knowledge");
+    $count_stmt->bind_param("ss", $like, $like);
 }
+$count_stmt->execute();
+$count_stmt->bind_result($total_rows);
+$count_stmt->fetch();
+$count_stmt->close();
+$total_pages = ceil($total_rows / $per_page);
 
+if ($search) {
+    $stmt = $conn->prepare("SELECT id, condition_if, consequence_then FROM conditional_knowledge WHERE condition_if LIKE ? OR consequence_then LIKE ? LIMIT ? OFFSET ?");
+    $stmt->bind_param("ssii", $like, $like, $per_page, $offset);
+} else {
+    $stmt = $conn->prepare("SELECT id, condition_if, consequence_then FROM conditional_knowledge LIMIT ? OFFSET ?");
+    $stmt->bind_param("ii", $per_page, $offset);
+}
 $stmt->execute();
 $result = $stmt->get_result();
 
-// Fetching all Terms
 $terms = [];
 $termQuery = $conn->query("SELECT term, description FROM terminology");
 while ($t = $termQuery->fetch_assoc()) {
@@ -25,8 +38,9 @@ while ($t = $termQuery->fetch_assoc()) {
 function linkify_terms($text, $terms) {
     foreach ($terms as $term => $desc) {
         $escaped = preg_quote($term, '/');
+        $safe_desc = htmlspecialchars($desc, ENT_QUOTES, 'UTF-8');  // Escapes quotes properly
         $pattern = "/\\b($escaped)\\b/i";
-        $replacement = "<span class='term-link' data-term=\"$term\" data-def=\"" . htmlspecialchars($desc) . "\">$1</span>";
+        $replacement = '<span class="term-link" data-term="$1" data-def="' . $safe_desc . '">$1</span>';
         $text = preg_replace($pattern, $replacement, $text);
     }
     return $text;
@@ -49,9 +63,6 @@ function linkify_terms($text, $terms) {
             padding: 10px;
             vertical-align: top;
             text-align: left;
-        }
-        td:nth-child(2) {
-            width: 50%;
         }
 
         .term-link {
@@ -104,6 +115,32 @@ function linkify_terms($text, $terms) {
             font-weight: bold;
         }
 
+        .pagination-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .pagination a, .pagination span {
+            padding: 6px 10px;
+            margin: 2px;
+            border: 1px solid #4CAF50;
+            color: #4CAF50;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+
+        .pagination a:hover {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .pagination .active {
+            background-color: #4CAF50;
+            color: white;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -132,24 +169,48 @@ function linkify_terms($text, $terms) {
             </tr>
         </thead>
         <tbody>
-        <?php
-        if ($result->num_rows > 0) {
-            while ($row = $result->fetch_assoc()) {
-                $condition = linkify_terms($row['condition_if'], $terms);
-                $consequence = linkify_terms($row['consequence_then'], $terms);
-                echo "<tr>
-                    <td>$condition</td>
-                    <td>$consequence</td>                    
-                </tr>";
-            }
-        } else {
-            echo "<tr><td colspan='2'>❌ No rules found.</td></tr>";
-        }
-        ?>
+        <?php if ($result->num_rows > 0): ?>
+            <?php while ($row = $result->fetch_assoc()): ?>
+                <tr>
+                    <td><?= linkify_terms($row['condition_if'], $terms) ?></td>
+                    <td><?= linkify_terms($row['consequence_then'], $terms) ?></td>
+                </tr>
+            <?php endwhile; ?>
+        <?php else: ?>
+            <tr><td colspan="2">❌ No rules found.</td></tr>
+        <?php endif; ?>
         </tbody>
     </table>
+
+    <div class="pagination-wrapper">
+        <!-- Left: entries per page -->
+        <form method="GET">
+            <input type="hidden" name="search" value="<?= htmlspecialchars($search) ?>">
+            <label>Entries per page:
+                <select name="per_page" onchange="this.form.submit()">
+                    <?php foreach ([10, 20, 30, 50, 100] as $n): ?>
+                        <option value="<?= $n ?>" <?= $n == $per_page ? 'selected' : '' ?>><?= $n ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </label>
+        </form>
+
+        <!-- Right: pagination -->
+        <div class="pagination">
+            <?php if ($page > 1): ?>
+                <a href="?page=<?= $page - 1 ?>&per_page=<?= $per_page ?>&search=<?= urlencode($search) ?>">« Prev</a>
+            <?php endif; ?>
+            <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+                <a href="?page=<?= $i ?>&per_page=<?= $per_page ?>&search=<?= urlencode($search) ?>" class="<?= $i == $page ? 'active' : '' ?>"><?= $i ?></a>
+            <?php endfor; ?>
+            <?php if ($page < $total_pages): ?>
+                <a href="?page=<?= $page + 1 ?>&per_page=<?= $per_page ?>&search=<?= urlencode($search) ?>">Next »</a>
+            <?php endif; ?>
+        </div>
+    </div>
 </div>
 
+<!-- Definition modal -->
 <div id="definition-modal">
     <div class="modal-content">
         <h3 id="modal-term"></h3>
